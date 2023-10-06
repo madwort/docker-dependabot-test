@@ -7,6 +7,7 @@ on:
     - cron: "17 04 * * 1"
   # let us manually trigger a build
   workflow_dispatch:
+  push:
 env:
   BASE_IMAGE_NAME: base-docker
   ACTION_IMAGE_NAME: base-action
