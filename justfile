@@ -1,4 +1,8 @@
 
+default:
+  @just --list
+
+# Update the files tracking the SHAs of ubuntu docker image
 update-docker-shas:
   @just _update-sha "ubuntu:20.04"
   @just _update-sha "ubuntu:22.04"
