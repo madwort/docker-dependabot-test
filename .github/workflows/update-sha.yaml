@@ -12,18 +12,13 @@ env:
   ACTION_IMAGE_NAME: base-action
 jobs:
   update:
-    strategy:
-      matrix:
-        os: ["ubuntu:20.04", "ubuntu:22.04"]
-      max-parallel: 1
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@master
-    - name: Get SHA of latest version
-      run: docker image pull ${{ matrix.os }}
-    - name: Write SHA to file
-      run: docker inspect --format='{{index .RepoDigests 0}}' ${{ matrix.os }} > ${{ matrix.os }}.sha
+    - uses: extractions/setup-just@69d82fb0233557aec017ef13706851d0694e0f1d
+    - name: update SHAs
+      run: just update-docker-shas
     - name: Commit file
       run: |
         git pull origin
@@ -34,10 +29,5 @@ jobs:
         fi
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git commit -m "Update base image SHA file ${{ matrix.os }}"
+        git commit -m "Update base image SHA files"
         git push origin
-    # - name: Push changes
-    #   uses: ad-m/github-push-action@master
-    #   with:
-    #     github_token: ${{ secrets.GITHUB_TOKEN }}
-    #     branch: ${{ github.ref }}
