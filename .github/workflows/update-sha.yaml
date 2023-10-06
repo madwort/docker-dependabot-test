@@ -15,6 +15,7 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu:20.04", "ubuntu:22.04"]
+      max-parallel: 1
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -23,11 +24,7 @@ jobs:
       run: docker image pull ${{ matrix.os }}
     - name: Write SHA to file
       run: docker inspect --format='{{index .RepoDigests 0}}' ${{ matrix.os }} > ${{ matrix.os }}.sha
-  commit:
-    needs: update
-    runs-on: ubuntu-latest
-    steps:
-    - name: Commit files
+    - name: Commit file
       run: |
         git status
         if git diff-index --quiet HEAD; then
@@ -36,9 +33,10 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add *.sha
-        git commit -m "Update base image SHA files"
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
+        git commit -m "Update base image SHA file ${{ matrix.os }}"
+        git push origin
+    # - name: Push changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     branch: ${{ github.ref }}
