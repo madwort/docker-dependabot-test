@@ -22,9 +22,8 @@ jobs:
       run: just update-docker-shas
     - name: Commit file
       run: |
-        git pull origin
         git status
-        git add ${{ matrix.os }}.sha
+        git add *.sha
         if git diff-index --quiet HEAD; then
           exit
         fi
