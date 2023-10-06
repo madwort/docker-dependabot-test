@@ -6,4 +6,4 @@ update-docker-shas:
 _update-sha os:
   echo {{ os }}
   docker image pull {{ os }}
-  docker inspect --format='{{{{index .RepoDigests 0}}}}' {{ os }} > {{ os }}.sha
+  docker inspect --format='{{{{index .RepoDigests 0}}' {{ os }} > {{ os }}.sha
