@@ -1,0 +1,43 @@
+name: Update SHA of latest ubuntu images
+# This is to workaround the 3mo timeout for GHA scheduled actions on repos with 
+# no new commits, by automatically creating new commits.
+on:
+  schedule:
+    # check for a new ubuntu image every week at 04:17am on mondays
+    - cron: "17 04 * * 1"
+  # let us manually trigger a build
+  workflow_dispatch:
+env:
+  BASE_IMAGE_NAME: base-docker
+  ACTION_IMAGE_NAME: base-action
+jobs:
+  update:
+    strategy:
+      matrix:
+        os: ["ubuntu:20.04", "ubuntu:22.04"]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Get SHA of latest version
+      run: docker image pull ${{ matrix.os }}
+    - name: Write SHA to file
+      run: docker inspect --format='{{index .RepoDigests 0}}' ${{ matrix.os }} > ${{ matrix.os }}.sha
+  commit:
+    needs: update
+    steps:
+    - name: Commit files
+      run: |
+        git status
+        if git diff-index --quiet HEAD; then
+          exit
+        fi
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add *.sha
+        git commit -m "Update base image SHA files"
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
