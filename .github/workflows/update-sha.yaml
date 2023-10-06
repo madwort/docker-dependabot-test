@@ -26,6 +26,7 @@ jobs:
       run: docker inspect --format='{{index .RepoDigests 0}}' ${{ matrix.os }} > ${{ matrix.os }}.sha
     - name: Commit file
       run: |
+        git pull origin
         git status
         git add ${{ matrix.os }}.sha
         if git diff-index --quiet HEAD; then
