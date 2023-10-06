@@ -25,6 +25,7 @@ jobs:
       run: docker inspect --format='{{index .RepoDigests 0}}' ${{ matrix.os }} > ${{ matrix.os }}.sha
   commit:
     needs: update
+    runs-on: ubuntu-latest
     steps:
     - name: Commit files
       run: |
