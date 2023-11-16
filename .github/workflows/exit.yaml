@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - continue-on-error:
       - name: test
         run: exit 0
       - name: follow-up
         run: exit 1
+        continue-on-error:
       - name: final
         run: echo "HERE!"
