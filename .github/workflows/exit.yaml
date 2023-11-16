@@ -13,6 +13,6 @@ jobs:
         run: exit 0
       - name: follow-up
         run: exit 1
-        continue-on-error:
+        continue-on-error: true
       - name: final
         run: echo "HERE!"
