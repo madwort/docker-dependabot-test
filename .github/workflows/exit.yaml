@@ -1,0 +1,17 @@
+---
+name: exit test
+
+on:
+  push:
+
+jobs:
+  mytest:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: test
+        run: exit 0
+      - name: follow-up
+        run: exit 1
+      - name: final
+        run: echo "HERE!"
